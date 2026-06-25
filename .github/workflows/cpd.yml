@@ -70,18 +70,6 @@ jobs:
           mvn -B -DskipTests=true -pl "$CHANGED_MODULES" \
             org.apache.maven.plugins:maven-pmd-plugin:cpd
 
-      - name: DEBUG dump cpd.xml pre-filter
-        if: steps.changed.outputs.any == 'true'
-        run: |
-          echo "--- changed-java-files.txt ---"
-          cat changed-java-files.txt
-          echo "--- cpd.xml files ---"
-          find . -name cpd.xml -path '*/target/*' -print
-          for f in $(find . -name cpd.xml -path '*/target/*'); do
-            echo "===== $f ====="
-            cat "$f"
-          done
-
       - name: Filter CPD reports to PR-changed files
         if: steps.changed.outputs.any == 'true'
         run: python3 .github/scripts/filter-cpd-by-changed-files.py changed-java-files.txt
